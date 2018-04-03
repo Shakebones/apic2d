@@ -1117,7 +1117,7 @@ namespace Gluvi{
   void (*userKeyFunc)( unsigned char key, int x, int y )=0;
   Camera *camera=0;
   WidgetList root(0);
-  int winwidth=1920, winheight=1080;
+  int winwidth=720, winheight=720;
   
   //=================================================================================
   

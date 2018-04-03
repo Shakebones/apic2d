@@ -1,3 +1,4 @@
+
 #include "fluidsim.h"
 #include "sorter.h"
 #include "kernel.h"
@@ -15,7 +16,7 @@
 
 #include "openglutils.h"
 
-const scalar source_velocity = 40.0;
+const scalar source_velocity = 0.0;
 const int particle_correction_step = 1;
 
 scalar fraction_inside(scalar phi_left, scalar phi_right);
@@ -567,6 +568,9 @@ void FluidSim::solve_pressure(scalar dt) {
   if(!success) {
     printf("WARNING: Pressure solve failed!************************************************\n");
   }
+
+  std::cout << "> Tolerance: " << tolerance << std::endl;
+  std::cout << "> Iterations: " << iterations << std::endl;
   
   //Apply the velocity update
   u_valid.assign(0);
@@ -768,40 +772,44 @@ void FluidSim::render()
   glScaled(1.0 / (dx * ni), 1.0 / (dx * ni), 1.0 / (dx * ni));
   
   if(draw_grid) {
-    glColor3f(0.75,0.75,0.75);
-    glLineWidth(1);
-    draw_grid2d(origin, dx, ni, nj);
+    // glColor3f(0.75,0.75,0.75);
+    // glLineWidth(1);
+    // draw_grid2d(origin, dx, ni, nj);
   }
   
   if(draw_boundaries) {
+    glColor3f(1.0f, 1.0f, 1.0f);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     render_boundaries(*root_boundary);
   }
   
   if(draw_particles) {
-    glColor3d(0,0,1);
-    glPointSize(5);
+    glColor3f(0.0f, 1.0f, 0.0f);
     glBegin(GL_POINTS);
     for(unsigned int i = 0; i < particles.size(); ++i) {
-      if(particles[i].type == PT_LIQUID)
+      if(particles[i].type == PT_LIQUID) {
+        scalar data[2];
+        data[0] = particles[i].x.data()[0];
+        data[1] = particles[i].x.data()[1];
         glVertex2dv(particles[i].x.data());
+      }
     }
     glEnd();
     
-    glColor3d(1,0,0);
     glBegin(GL_POINTS);
     for(unsigned int i = 0; i < particles.size(); ++i) {
+      glColor3f(1.0f, 1.0f, 1.0f);
       if(particles[i].type == PT_SOLID)
         glVertex2dv(particles[i].x.data());
     }
     glEnd();
   }
   if(draw_velocities) {
-    glColor3d(1,0,0);
-    for(int j = 0;j < nj; ++j) for(int i = 0; i < ni; ++i) {
-      Vector2s pos = Vector2s((i+0.5)*dx,(j+0.5)*dx) + origin;
-      draw_arrow2d(pos, pos + 0.01 * get_velocity(pos), 0.1 * dx);
-    }
+    // glColor3d(1,0,0);
+    // for(int j = 0;j < nj; ++j) for(int i = 0; i < ni; ++i) {
+    //   Vector2s pos = Vector2s((i+0.5)*dx,(j+0.5)*dx) + origin;
+    //   draw_arrow2d(pos, pos + 0.01 * get_velocity(pos), 0.1 * dx);
+    // }
   }
   
   glPopMatrix();

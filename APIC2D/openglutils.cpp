@@ -46,12 +46,13 @@ void draw_grid2d(const Vector2s& origin, scalar dx, int nx, int ny) {
 }
 
 void draw_box2d(const Vector2s& origin, scalar width, scalar height) {
-  Vector2s o1 = origin + Vector2s(0, height);
+  Vector2s o0 = origin + Vector2s(-width, -height);
+  Vector2s o1 = origin + Vector2s(width, -height);
   Vector2s o2 = origin + Vector2s(width, height);
-  Vector2s o3 = origin + Vector2s(width, 0);
+  Vector2s o3 = origin + Vector2s(-width, height);
   
   glBegin(GL_POLYGON);
-  glVertex2dv(origin.data());
+  glVertex2dv(o0.data());
   glVertex2dv(o1.data());
   glVertex2dv(o2.data());
   glVertex2dv(o3.data());
